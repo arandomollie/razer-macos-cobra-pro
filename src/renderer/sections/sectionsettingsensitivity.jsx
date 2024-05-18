@@ -5,10 +5,11 @@ import { ipcRenderer } from 'electron';
 import { FeatureIdentifier } from '../../main/feature/featureidentifier';
 
 export class SectionSettingSensitivity extends SectionSettingBlock {
-
   constructor(props) {
     super(props);
-    this.dpiFeature = this.deviceSelected.features.find(feature => feature.featureIdentifier === FeatureIdentifier.MOUSE_DPI)
+    this.dpiFeature = this.deviceSelected.features.find(
+      (feature) => feature.featureIdentifier === FeatureIdentifier.MOUSE_DPI
+    );
   }
 
   renderTitle() {
@@ -18,15 +19,21 @@ export class SectionSettingSensitivity extends SectionSettingBlock {
   handleClick(currentDpi) {
     let payload = {
       device: this.deviceSelected,
-      dpi: currentDpi
+      dpi: currentDpi,
     };
     ipcRenderer.send('request-set-dpi', payload);
-  };
+  }
 
   renderSettings() {
-    if(this.dpiFeature == null) {
+    if (this.dpiFeature == null) {
       return null;
     }
-    return <MouseSensitivity dpi={this.deviceSelected.dpi} configuration={this.dpiFeature.configuration} handleClick={(dpi) => this.handleClick(dpi)} />;
+    return (
+      <MouseSensitivity
+        dpi={this.deviceSelected.dpi}
+        configuration={this.dpiFeature.configuration}
+        handleClick={(dpi) => this.handleClick(dpi)}
+      />
+    );
   }
 }

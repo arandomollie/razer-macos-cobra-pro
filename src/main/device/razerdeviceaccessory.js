@@ -12,7 +12,10 @@ export class RazerDeviceAccessory extends RazerDevice {
 
   setModeStaticNoStore(color) {
     super.setModeStaticNoStore(color);
-    this.addon.accessorySetModeStaticNoStore(this.internalId, new Uint8Array(color));
+    this.addon.accessorySetModeStaticNoStore(
+      this.internalId,
+      new Uint8Array(color)
+    );
   }
 
   setModeStatic(color) {

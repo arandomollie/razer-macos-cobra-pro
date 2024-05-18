@@ -1,8 +1,12 @@
 import { RazerDeviceAnimation } from './animation';
 
 export class RazerAnimationRipple extends RazerDeviceAnimation {
-
-constructor(device, featureConfiguration, color, backgroundColor = [0, 0, 0]) {
+  constructor(
+    device,
+    featureConfiguration,
+    color,
+    backgroundColor = [0, 0, 0]
+  ) {
     super();
     this.KEY_MAPPING = {
       1: [0, 1],
@@ -114,7 +118,8 @@ constructor(device, featureConfiguration, color, backgroundColor = [0, 0, 0]) {
     this.rippleEffectInterval = null;
 
     this.color = color;
-    this.backgroundColor = backgroundColor != null ? backgroundColor : [0, 0, 0];
+    this.backgroundColor =
+      backgroundColor != null ? backgroundColor : [0, 0, 0];
 
     this.device = device;
     this.ioHook = require('iohook');
@@ -137,7 +142,7 @@ constructor(device, featureConfiguration, color, backgroundColor = [0, 0, 0]) {
       .map(() => Array(this.nCols).fill(this.backgroundColor));
     for (let i = 0; i < this.nRows; i++) {
       let row = [i, 0, this.nCols - 1, ...matrix[i].flat()];
-      this.device.setCustomFrame(new Uint8Array(row))
+      this.device.setCustomFrame(new Uint8Array(row));
     }
     this.device.setModeCustom();
     let keyEvents = [];
@@ -156,7 +161,9 @@ constructor(device, featureConfiguration, color, backgroundColor = [0, 0, 0]) {
     });
 
     this.rippleEffectInterval = setInterval(() => {
-      keyEvents = keyEvents.filter((event) => event.startTime + eventDuration > Date.now() / 1000);
+      keyEvents = keyEvents.filter(
+        (event) => event.startTime + eventDuration > Date.now() / 1000
+      );
 
       // clear keyboard
       matrix = Array(this.nRows)
@@ -169,7 +176,7 @@ constructor(device, featureConfiguration, color, backgroundColor = [0, 0, 0]) {
           for (let event of keyEvents) {
             const radius = (Date.now() / 1000 - event.startTime) * speed;
             const distance = Math.sqrt(
-              Math.pow(event.rowIdx - i, 2) + Math.pow(event.colIdx - j, 2),
+              Math.pow(event.rowIdx - i, 2) + Math.pow(event.colIdx - j, 2)
             );
             if (radius - width <= distance && distance <= radius) {
               matrix[i][j] = this.color;

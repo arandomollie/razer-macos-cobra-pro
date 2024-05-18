@@ -11,7 +11,7 @@ export function getMenuFor(application) {
 }
 
 function patch(deviceMenu, application) {
-  deviceMenu.forEach(menuItem => {
+  deviceMenu.forEach((menuItem) => {
     if (menuItem.hasOwnProperty('click')) {
       const originalClick = menuItem['click'];
       menuItem['click'] = (ev) => {
@@ -35,16 +35,20 @@ function getMainMenu(application) {
     {
       label: 'Clear all settings',
       click() {
-        application.showConfirm("Really clear all settings?").then(result => {
-          if(result.response === 0) {
-            return application.razerApplication.settingsManager.clearAll();
-          } else {
-            return Promise.resolve();
-          }
-        }).then(() => {
-          application.refreshTray(true);
-        }).catch(() => {});
-      }
+        application
+          .showConfirm('Really clear all settings?')
+          .then((result) => {
+            if (result.response === 0) {
+              return application.razerApplication.settingsManager.clearAll();
+            } else {
+              return Promise.resolve();
+            }
+          })
+          .then(() => {
+            application.refreshTray(true);
+          })
+          .catch(() => {});
+      },
     },
     {
       label: 'State manager',
@@ -64,9 +68,11 @@ function getMainMenu(application) {
     {
       label: 'None',
       click() {
-        application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-          device.setModeNone();
-        });
+        application.razerApplication.deviceManager.activeRazerDevices.forEach(
+          (device) => {
+            device.setModeNone();
+          }
+        );
       },
     },
     {
@@ -75,33 +81,43 @@ function getMainMenu(application) {
         {
           label: 'Custom',
           click() {
-            application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-              device.setModeStatic(Object.values(device.settings.customColor1.rgb).slice(0,3));
-            });
+            application.razerApplication.deviceManager.activeRazerDevices.forEach(
+              (device) => {
+                device.setModeStatic(
+                  Object.values(device.settings.customColor1.rgb).slice(0, 3)
+                );
+              }
+            );
           },
         },
         {
           label: 'Red',
           click() {
-            application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-              device.setModeStatic([0xff, 0, 0]);
-            });
+            application.razerApplication.deviceManager.activeRazerDevices.forEach(
+              (device) => {
+                device.setModeStatic([0xff, 0, 0]);
+              }
+            );
           },
         },
         {
           label: 'Green',
           click() {
-            application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-              device.setModeStatic([0, 0xff, 0]);
-            });
+            application.razerApplication.deviceManager.activeRazerDevices.forEach(
+              (device) => {
+                device.setModeStatic([0, 0xff, 0]);
+              }
+            );
           },
         },
         {
           label: 'Blue',
           click() {
-            application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-              device.setModeStatic([0, 0, 0xff]);
-            });
+            application.razerApplication.deviceManager.activeRazerDevices.forEach(
+              (device) => {
+                device.setModeStatic([0, 0, 0xff]);
+              }
+            );
           },
         },
       ],
@@ -113,19 +129,22 @@ function getMainMenu(application) {
           label: 'By device',
           toolTip: 'Runs spectrum mode for all attached devices',
           click() {
-            application.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-              device.setSpectrum();
-            });
-          }
+            application.razerApplication.deviceManager.activeRazerDevices.forEach(
+              (device) => {
+                device.setSpectrum();
+              }
+            );
+          },
         },
         {
           label: 'By animation',
-          toolTip: 'Starts timed animation which changes color for all attached devices',
+          toolTip:
+            'Starts timed animation which changes color for all attached devices',
           click() {
             application.razerApplication.spectrumAnimation.start();
-          }
+          },
         },
-      ]
+      ],
     },
   ];
 }
@@ -148,7 +167,11 @@ function getCustomColorsCycleMenu(application) {
     {
       label: 'Add Color',
       click() {
-        application.razerApplication.cycleAnimation.addColor({ r: 0x00, g: 0xff, b: 0x00 });
+        application.razerApplication.cycleAnimation.addColor({
+          r: 0x00,
+          g: 0xff,
+          b: 0x00,
+        });
         application.refreshTray();
       },
     },
@@ -166,27 +189,33 @@ function getCustomColorsCycleMenu(application) {
     { type: 'separator' },
   ];
 
-  const colorItems = application.razerApplication.cycleAnimation.getAllColors().map((color, index) => {
-    return {
-      label: 'Color ' + (index + 1),
-      click: () => {
-        application.showView({
-          mode: 'color',
-          index: index,
-          color: color
-        });
-      },
-    };
-  });
+  const colorItems = application.razerApplication.cycleAnimation
+    .getAllColors()
+    .map((color, index) => {
+      return {
+        label: 'Color ' + (index + 1),
+        click: () => {
+          application.showView({
+            mode: 'color',
+            index: index,
+            color: color,
+          });
+        },
+      };
+    });
 
-  return [{
-    label: 'Cycle',
-    submenu: cccMenu.concat(colorItems)
-  }]
+  return [
+    {
+      label: 'Cycle',
+      submenu: cccMenu.concat(colorItems),
+    },
+  ];
 }
 
 function getDeviceMenu(application) {
-  return application.razerApplication.deviceManager.activeRazerDevices.map(device => getDeviceMenuFor(application, device)).flat();
+  return application.razerApplication.deviceManager.activeRazerDevices
+    .map((device) => getDeviceMenuFor(application, device))
+    .flat();
 }
 
 function getMainMenuBottom(application) {
@@ -208,5 +237,5 @@ function getMainMenuBottom(application) {
       },
       accelerator: 'Command+Q',
     },
-  ]
+  ];
 }

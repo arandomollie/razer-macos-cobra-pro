@@ -1,7 +1,6 @@
 import { RazerAnimationCycle } from './animationcycle';
 
 export class RazerAnimationCycleCustom extends RazerAnimationCycle {
-
   constructor(razerApp) {
     super(razerApp);
     this.settingsKey = 'cycleColors';
@@ -15,7 +14,9 @@ export class RazerAnimationCycleCustom extends RazerAnimationCycle {
   async init() {
     await super.init();
     if (await this.razerApp.settingsManager.hasKey(this.settingsKey)) {
-      this.cycleColors = await this.razerApp.settingsManager.getKey(this.settingsKey);
+      this.cycleColors = await this.razerApp.settingsManager.getKey(
+        this.settingsKey
+      );
     }
     return this;
   }
@@ -44,6 +45,9 @@ export class RazerAnimationCycleCustom extends RazerAnimationCycle {
   }
 
   saveSettings() {
-    return this.razerApp.settingsManager.setKey(this.settingsKey, this.cycleColors);
+    return this.razerApp.settingsManager.setKey(
+      this.settingsKey,
+      this.cycleColors
+    );
   }
 }

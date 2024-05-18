@@ -5,12 +5,16 @@ import { ipcRenderer } from 'electron';
 import { FeatureIdentifier } from '../../main/feature/featureidentifier';
 
 export class SectionSettingPollRate extends SectionSettingBlock {
-
   constructor(props) {
     super(props);
-    this.pollRateFeature = this.deviceSelected.features.find(feature => feature.featureIdentifier === FeatureIdentifier.POLL_RATE);
+    this.pollRateFeature = this.deviceSelected.features.find(
+      (feature) => feature.featureIdentifier === FeatureIdentifier.POLL_RATE
+    );
     this.state = {
-      pollRate: { value: this.deviceSelected.pollRate, label: this.deviceSelected.pollRate + 'Hz' },
+      pollRate: {
+        value: this.deviceSelected.pollRate,
+        label: this.deviceSelected.pollRate + 'Hz',
+      },
     };
   }
 
@@ -35,7 +39,7 @@ export class SectionSettingPollRate extends SectionSettingBlock {
       return null;
     }
 
-    const options = this.pollRateFeature.configuration.pollRates.map(rate => {
+    const options = this.pollRateFeature.configuration.pollRates.map((rate) => {
       return { value: rate, label: rate + 'Hz' };
     });
 
@@ -54,7 +58,7 @@ export class SectionSettingPollRate extends SectionSettingBlock {
         },
         ':hover': {
           backgroundColor: state.isSelected ? 'green' : '#002b17',
-        }
+        },
       }),
       control: (provided, state) => ({
         ...provided,
@@ -67,8 +71,8 @@ export class SectionSettingPollRate extends SectionSettingBlock {
         minHeight: 0,
         boxShadow: 'none',
         transition: 'none',
-        ":hover": {
-          borderColor: "inherit",
+        ':hover': {
+          borderColor: 'inherit',
         },
       }),
       menu: (provided, state) => ({
@@ -87,7 +91,7 @@ export class SectionSettingPollRate extends SectionSettingBlock {
       dropdownIndicator: (provided, state) => ({
         ...provided,
         color: '#47e10c',
-        padding: '0px 8px'
+        padding: '0px 8px',
       }),
       indicatorSeparator: (provided, state) => ({
         ...provided,
@@ -99,14 +103,20 @@ export class SectionSettingPollRate extends SectionSettingBlock {
       }),
     };
 
-    return <div style={{ paddingTop: '10px' }}>
-      <div className={'control'}>
-        <Select value={this.state.pollRate} options={options} onChange={(item) => this.selectionChange(item)}
-                styles={customStyles} />
+    return (
+      <div style={{ paddingTop: '10px' }}>
+        <div className={'control'}>
+          <Select
+            value={this.state.pollRate}
+            options={options}
+            onChange={(item) => this.selectionChange(item)}
+            styles={customStyles}
+          />
+        </div>
+        <div className={'control'}>
+          <button onClick={() => this.handleClick()}>Save polling rate</button>
+        </div>
       </div>
-      <div className={'control'}>
-        <button onClick={() => this.handleClick()}>Save polling rate</button>
-      </div>
-    </div>;
+    );
   }
 }

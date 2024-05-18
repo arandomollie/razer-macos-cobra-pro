@@ -8,10 +8,10 @@ export class FeatureOldMouseEffects extends Feature {
 
   getDefaultConfiguration() {
     return {
-      "enabledStatic" : true,
-      "enabledBlinking" : true,
-      "enabledPulsate" : true,
-      "enabledScroll" : true
-    }
+      enabledStatic: true,
+      enabledBlinking: true,
+      enabledPulsate: true,
+      enabledScroll: true,
+    };
   }
 }

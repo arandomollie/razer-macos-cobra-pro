@@ -8,20 +8,24 @@ export function getDeviceMenuFor(application, razerDevice) {
     { type: 'separator' },
   ];
 
-  const featureMenu = razerDevice.features.map(feature => getFeatureMenuFor(application, razerDevice, feature)).filter(item => item != null);
+  const featureMenu = razerDevice.features
+    .map((feature) => getFeatureMenuFor(application, razerDevice, feature))
+    .filter((item) => item != null);
   deviceMenu = deviceMenu.concat(featureMenu);
   return deviceMenu;
 }
 
 function getHeaderFor(application, razerDevice) {
-
   let label = razerDevice.name;
   let icon = null;
   switch (razerDevice.mainType) {
     case RazerDeviceType.KEYBOARD:
       break;
     case RazerDeviceType.MOUSE:
-      if (razerDevice.hasFeature(FeatureIdentifier.BATTERY) && razerDevice.batteryLevel !== -1) {
+      if (
+        razerDevice.hasFeature(FeatureIdentifier.BATTERY) &&
+        razerDevice.batteryLevel !== -1
+      ) {
         if (razerDevice.chargingStatus) {
           label = label + ' - ⚡' + razerDevice.batteryLevel.toString() + '%';
         } else {
@@ -88,7 +92,11 @@ function getFeatureMenuFor(application, device, feature) {
     case FeatureIdentifier.BATTERY:
       return null;
     default:
-      throw 'Unmapped feature for identifier ' + feature.featureIdentifier + ' detected.';
+      throw (
+        'Unmapped feature for identifier ' +
+        feature.featureIdentifier +
+        ' detected.'
+      );
   }
 }
 
@@ -141,37 +149,44 @@ function getFeatureNone(application, device, feature) {
 }
 
 function getFeatureOldMouseEffect(application, device, feature) {
-
   const submenu = [
-    feature.configuration.enabledStatic ? {
-      label: 'Static',
-      click() {
-        device.setLogoLEDEffect('static');
-      },
-    } : null,
-    feature.configuration.enabledBlinking ? {
-      label: 'Blinking',
-      click() {
-        device.setLogoLEDEffect('blinking');
-      },
-    } : null,
-    feature.configuration.enabledPulsate ? {
-      label: 'Pulsate',
-      click() {
-        device.setLogoLEDEffect('pulsate');
-      },
-    } : null,
-    feature.configuration.enabledScroll ? {
-      label: 'Scroll',
-      click() {
-        device.setLogoLEDEffect('scroll');
-      },
-    } : null,
+    feature.configuration.enabledStatic
+      ? {
+          label: 'Static',
+          click() {
+            device.setLogoLEDEffect('static');
+          },
+        }
+      : null,
+    feature.configuration.enabledBlinking
+      ? {
+          label: 'Blinking',
+          click() {
+            device.setLogoLEDEffect('blinking');
+          },
+        }
+      : null,
+    feature.configuration.enabledPulsate
+      ? {
+          label: 'Pulsate',
+          click() {
+            device.setLogoLEDEffect('pulsate');
+          },
+        }
+      : null,
+    feature.configuration.enabledScroll
+      ? {
+          label: 'Scroll',
+          click() {
+            device.setLogoLEDEffect('scroll');
+          },
+        }
+      : null,
   ];
 
   return {
     label: 'Older model effects',
-    submenu: submenu.filter(s => s !== null),
+    submenu: submenu.filter((s) => s !== null),
   };
 }
 
@@ -187,7 +202,12 @@ function getFeatureReactive(application, device, feature) {
   return {
     label: 'Reactive',
     submenu: [
-      singleItem('Custom color', [3, device.settings.customColor1.rgb.r, device.settings.customColor1.rgb.g, device.settings.customColor1.rgb.b]),
+      singleItem('Custom color', [
+        3,
+        device.settings.customColor1.rgb.r,
+        device.settings.customColor1.rgb.g,
+        device.settings.customColor1.rgb.b,
+      ]),
       singleItem('Red', [3, 0xff, 0, 0]),
       singleItem('Green', [3, 0, 0xff, 0]),
       singleItem('Blue', [3, 0, 0, 0xff]),
@@ -196,12 +216,15 @@ function getFeatureReactive(application, device, feature) {
 }
 
 function getFeatureRipple(application, device, feature) {
-
-  if(feature.configuration == null || feature.configuration.rows === -1 ||  feature.configuration.cols === -1) {
+  if (
+    feature.configuration == null ||
+    feature.configuration.rows === -1 ||
+    feature.configuration.cols === -1
+  ) {
     return {
       // device missing rows, cols config
       label: 'Ripple',
-      enabled: false
+      enabled: false,
     };
   }
 
@@ -217,10 +240,14 @@ function getFeatureRipple(application, device, feature) {
   return {
     label: 'Ripple',
     submenu: [
-      singleItem('Custom color', Object.values(device.settings.customColor1.rgb).slice(0, 3)),
-      singleItem('Custom dual color',
+      singleItem(
+        'Custom color',
+        Object.values(device.settings.customColor1.rgb).slice(0, 3)
+      ),
+      singleItem(
+        'Custom dual color',
         Object.values(device.settings.customColor1.rgb).slice(0, 3),
-        Object.values(device.settings.customColor2.rgb).slice(0, 3),
+        Object.values(device.settings.customColor2.rgb).slice(0, 3)
       ),
       singleItem('Red', [0xff, 0, 0]),
       singleItem('Green', [0, 0xff, 0]),
@@ -230,12 +257,15 @@ function getFeatureRipple(application, device, feature) {
 }
 
 function getFeatureWheel(application, device, feature) {
-
-  if(feature.configuration == null || feature.configuration.rows === -1 ||  feature.configuration.cols === -1) {
+  if (
+    feature.configuration == null ||
+    feature.configuration.rows === -1 ||
+    feature.configuration.cols === -1
+  ) {
     return {
       // device missing rows, cols config
       label: 'Wheel',
-      enabled: false
+      enabled: false,
     };
   }
 
@@ -290,11 +320,22 @@ function getFeatureStarlight(application, device, feature) {
     submenu: [
       {
         label: 'Custom color',
-        submenu: menuFor([device.settings.customColor1.rgb.r, device.settings.customColor1.rgb.g, device.settings.customColor1.rgb.b]),
+        submenu: menuFor([
+          device.settings.customColor1.rgb.r,
+          device.settings.customColor1.rgb.g,
+          device.settings.customColor1.rgb.b,
+        ]),
       },
       {
         label: 'Custom dual color',
-        submenu: menuFor([device.settings.customColor1.rgb.r, device.settings.customColor1.rgb.g, device.settings.customColor1.rgb.b, device.settings.customColor2.rgb.r, device.settings.customColor2.rgb.g, device.settings.customColor2.rgb.b]),
+        submenu: menuFor([
+          device.settings.customColor1.rgb.r,
+          device.settings.customColor1.rgb.g,
+          device.settings.customColor1.rgb.b,
+          device.settings.customColor2.rgb.r,
+          device.settings.customColor2.rgb.g,
+          device.settings.customColor2.rgb.b,
+        ]),
       },
       {
         label: 'Random',
@@ -352,16 +393,22 @@ function getFeatureStatic(application, device, feature) {
   };
 
   const subMenu = [
-    singleItem('Custom color', [device.settings.customColor1.rgb.r, device.settings.customColor1.rgb.g, device.settings.customColor1.rgb.b]),
+    singleItem('Custom color', [
+      device.settings.customColor1.rgb.r,
+      device.settings.customColor1.rgb.g,
+      device.settings.customColor1.rgb.b,
+    ]),
     feature.hasAllColors() ? singleItem('White', [0xff, 0xff, 0xff]) : null,
     feature.configuration.enabledRed ? singleItem('Red', [0xff, 0, 0]) : null,
-    feature.configuration.enabledGreen ? singleItem('Green', [0, 0xff, 0]) : null,
+    feature.configuration.enabledGreen
+      ? singleItem('Green', [0, 0xff, 0])
+      : null,
     feature.configuration.enabledBlue ? singleItem('Blue', [0, 0, 0xff]) : null,
   ];
 
   return {
     label: 'Static',
-    submenu: subMenu.filter(s => s !== null),
+    submenu: subMenu.filter((s) => s !== null),
   };
 }
 
@@ -425,100 +472,116 @@ function getFeatureWaveSimple(application, device, feature) {
 }
 
 function getFeatureMouseBrightness(application, device, feature) {
-
   const submenu = [
-    feature.configuration.enabledMatrix ? {
-      label: 'All (' + device.getBrightnessMatrix() + '%)',
-      submenu: [
-        {
-          label: '0%', click() {
-            device.setBrightnessMatrix(0);
-            application.refreshTray();
-          },
-        },
-        {
-          label: '100%', click() {
-            device.setBrightnessMatrix(100);
-            application.refreshTray();
-          },
-        },
-      ],
-    } : null,
-    feature.configuration.enabledLogo ? {
-      label: 'Logo (' + device.getBrightnessLogo() + '%)',
-      submenu: [
-        {
-          label: '0%', click() {
-            device.setBrightnessLogo(0);
-            application.refreshTray();
-          },
-        },
-        {
-          label: '100%', click() {
-            device.setBrightnessLogo(100);
-            application.refreshTray();
-          },
-        },
-      ],
-    } : null,
-    feature.configuration.enabledScroll ?
-      {
-        label: 'Scroll (' + device.getBrightnessScroll() + '%)',
-        submenu: [
-          {
-            label: '0%', click() {
-              device.setBrightnessScroll(0);
-              application.refreshTray();
+    feature.configuration.enabledMatrix
+      ? {
+          label: 'All (' + device.getBrightnessMatrix() + '%)',
+          submenu: [
+            {
+              label: '0%',
+              click() {
+                device.setBrightnessMatrix(0);
+                application.refreshTray();
+              },
             },
-          },
-          {
-            label: '100%', click() {
-              device.setBrightnessScroll(100);
-              application.refreshTray();
+            {
+              label: '100%',
+              click() {
+                device.setBrightnessMatrix(100);
+                application.refreshTray();
+              },
             },
-          },
-        ],
-      } : null,
-    feature.configuration.enabledLeft ?
-      {
-        label: 'Left (' + device.getBrightnessLeft() + '%)',
-        submenu: [
-          {
-            label: '0%', click() {
-              device.setBrightnessLeft(0);
-              application.refreshTray();
+          ],
+        }
+      : null,
+    feature.configuration.enabledLogo
+      ? {
+          label: 'Logo (' + device.getBrightnessLogo() + '%)',
+          submenu: [
+            {
+              label: '0%',
+              click() {
+                device.setBrightnessLogo(0);
+                application.refreshTray();
+              },
             },
-          },
-          {
-            label: '100%', click() {
-              device.setBrightnessLeft(100);
-              application.refreshTray();
+            {
+              label: '100%',
+              click() {
+                device.setBrightnessLogo(100);
+                application.refreshTray();
+              },
             },
-          },
-        ],
-      } : null,
-    feature.configuration.enabledRight ?
-      {
-        label: 'Right (' + device.getBrightnessRight() + '%)',
-        submenu: [
-          {
-            label: '0%', click() {
-              device.setBrightnessRight(0);
-              application.refreshTray();
+          ],
+        }
+      : null,
+    feature.configuration.enabledScroll
+      ? {
+          label: 'Scroll (' + device.getBrightnessScroll() + '%)',
+          submenu: [
+            {
+              label: '0%',
+              click() {
+                device.setBrightnessScroll(0);
+                application.refreshTray();
+              },
             },
-          },
-          {
-            label: '100%', click() {
-              device.setBrightnessRight(100);
-              application.refreshTray();
+            {
+              label: '100%',
+              click() {
+                device.setBrightnessScroll(100);
+                application.refreshTray();
+              },
             },
-          },
-        ],
-      } : null,
+          ],
+        }
+      : null,
+    feature.configuration.enabledLeft
+      ? {
+          label: 'Left (' + device.getBrightnessLeft() + '%)',
+          submenu: [
+            {
+              label: '0%',
+              click() {
+                device.setBrightnessLeft(0);
+                application.refreshTray();
+              },
+            },
+            {
+              label: '100%',
+              click() {
+                device.setBrightnessLeft(100);
+                application.refreshTray();
+              },
+            },
+          ],
+        }
+      : null,
+    feature.configuration.enabledRight
+      ? {
+          label: 'Right (' + device.getBrightnessRight() + '%)',
+          submenu: [
+            {
+              label: '0%',
+              click() {
+                device.setBrightnessRight(0);
+                application.refreshTray();
+              },
+            },
+            {
+              label: '100%',
+              click() {
+                device.setBrightnessRight(100);
+                application.refreshTray();
+              },
+            },
+          ],
+        }
+      : null,
   ];
 
   return {
     label: 'Brightness',
-    submenu: submenu.filter(s => s!= null),
+    submenu: submenu.filter((s) => s != null),
   };
 }

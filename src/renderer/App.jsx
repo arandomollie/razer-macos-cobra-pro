@@ -14,26 +14,30 @@ export class App extends React.Component {
 
     this.state = {
       mode: 'device',
-      message: null
+      message: null,
     };
 
     ipcRenderer.on('render-view', (event, message) => {
-      const {mode} = message;
-      this.setState({mode: null, message: null});
-      this.setState({mode: mode, message: message});
-    })
+      const { mode } = message;
+      this.setState({ mode: null, message: null });
+      this.setState({ mode: mode, message: message });
+    });
   }
 
   render() {
-    if(this.state.mode === 'device') {
-      return <ViewDeviceSettings config={this.state.message}></ViewDeviceSettings>;
-    } else if(this.state.mode == 'color') {
-      return <ViewColorSettings config={this.state.message}></ViewColorSettings>;
-    } else if(this.state.mode == 'state') {
-      return <ViewStateSettings config={this.state.message}></ViewStateSettings>;
+    if (this.state.mode === 'device') {
+      return (
+        <ViewDeviceSettings config={this.state.message}></ViewDeviceSettings>
+      );
+    } else if (this.state.mode == 'color') {
+      return (
+        <ViewColorSettings config={this.state.message}></ViewColorSettings>
+      );
+    } else if (this.state.mode == 'state') {
+      return (
+        <ViewStateSettings config={this.state.message}></ViewStateSettings>
+      );
     }
     return <div></div>;
   }
-
-
 }

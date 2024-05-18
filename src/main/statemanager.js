@@ -1,5 +1,4 @@
 export class StateManager {
-
   constructor(settingsManager) {
     this.settingsManager = settingsManager;
     this.settingsKey = 'statemanager';
@@ -32,7 +31,7 @@ export class StateManager {
     }
 
     //check for resets on load
-    if(withOnStartState) {
+    if (withOnStartState) {
       await this.changeToState(this.stateOnStart);
     }
   }
@@ -53,7 +52,11 @@ export class StateManager {
   }
 
   async changeToState(state) {
-    if (state != null && this.savedStates != null && this.savedStates.find(s => s.name == state)) {
+    if (
+      state != null &&
+      this.savedStates != null &&
+      this.savedStates.find((s) => s.name == state)
+    ) {
       await this.activateState(state);
     }
   }
@@ -89,7 +92,7 @@ export class StateManager {
   getDefaultStates() {
     const idleState = {
       name: 'All lights off',
-      states: this.devices.map(device => {
+      states: this.devices.map((device) => {
         const currentState = device.getState();
         currentState.mode = 'none';
         currentState.args = null;
@@ -119,17 +122,23 @@ export class StateManager {
   }
 
   activateState(stateName) {
-    const state = this.savedStates.find(s => s.name === stateName);
+    const state = this.savedStates.find((s) => s.name === stateName);
     if (state == null) {
       console.error('State "' + state + '" is not a valid state.');
       return;
     }
-    state.states.forEach(stateObj => {
-      const device = this.devices.find(d => d.productId === stateObj.deviceId);
+    state.states.forEach((stateObj) => {
+      const device = this.devices.find(
+        (d) => d.productId === stateObj.deviceId
+      );
       if (device != null) {
         device.resetToState(stateObj.state);
       } else {
-        console.warn('Device with id "' + stateObj.deviceId + '" has not been found and was skipped.');
+        console.warn(
+          'Device with id "' +
+            stateObj.deviceId +
+            '" has not been found and was skipped.'
+        );
       }
     });
   }
@@ -137,7 +146,7 @@ export class StateManager {
   async addState(stateName) {
     const newState = {
       name: stateName,
-      states: this.devices.map(device => {
+      states: this.devices.map((device) => {
         return {
           deviceId: device.productId,
           state: device.getState(),
@@ -150,7 +159,9 @@ export class StateManager {
   }
 
   async removeState(stateName) {
-    this.savedStates = this.savedStates.filter(state => state.name !== stateName);
+    this.savedStates = this.savedStates.filter(
+      (state) => state.name !== stateName
+    );
     if (this.stateOnWake === stateName) {
       this.stateOnWake = null;
     }
@@ -165,7 +176,9 @@ export class StateManager {
 
   resetStateFor(device, state) {
     if (state.mode == null) {
-      console.warn('State mode has never been set. Can\'t reset to undefined state');
+      console.warn(
+        "State mode has never been set. Can't reset to undefined state"
+      );
       return;
     }
     switch (state.mode) {
@@ -209,7 +222,7 @@ export class StateManager {
 
   serialize() {
     return {
-      devices: this.devices.map(device => device.serialize()),
+      devices: this.devices.map((device) => device.serialize()),
       savedStates: this.savedStates,
       stateOnStart: this.stateOnStart,
       stateOnResume: this.stateOnResume,

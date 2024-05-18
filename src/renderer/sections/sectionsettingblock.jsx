@@ -16,13 +16,15 @@ export class SectionSettingBlock extends React.Component {
 
   render() {
     const renderedSettings = this.renderSettings();
-    if(renderedSettings == null) {
+    if (renderedSettings == null) {
       return null;
     }
 
-    return <div className='settings-block'>
-      <div className='settings-block-title'>{this.renderTitle()}</div>
-      <div className='settings-block-body'>{renderedSettings}</div>
-    </div>
+    return (
+      <div className="settings-block">
+        <div className="settings-block-title">{this.renderTitle()}</div>
+        <div className="settings-block-body">{renderedSettings}</div>
+      </div>
+    );
   }
 }

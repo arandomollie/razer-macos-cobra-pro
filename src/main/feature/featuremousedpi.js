@@ -8,9 +8,9 @@ export class FeatureMouseDPI extends Feature {
 
   getDefaultConfiguration() {
     return {
-      "step": 100,
-      "min": 100,
-      "max": 20000,
+      step: 100,
+      min: 100,
+      max: 20000,
     };
   }
 }

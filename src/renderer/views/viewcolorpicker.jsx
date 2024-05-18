@@ -3,7 +3,6 @@ import { ChromePicker } from 'react-color';
 import { ipcRenderer } from 'electron';
 
 export class ViewColorSettings extends React.Component {
-
   constructor(props) {
     super(props);
     this.index = props.config.index;
@@ -11,8 +10,8 @@ export class ViewColorSettings extends React.Component {
       color: {
         hex: this.rgbToHex(props.config.color),
         rgb: props.config.color,
-      }
-    }
+      },
+    };
   }
 
   componentToHex(c) {
@@ -24,11 +23,16 @@ export class ViewColorSettings extends React.Component {
   }
 
   rgbToHex({ r, g, b }) {
-    return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    return (
+      '#' +
+      this.componentToHex(r) +
+      this.componentToHex(g) +
+      this.componentToHex(b)
+    );
   }
 
   handleChange(newColor) {
-    this.setState({ color: newColor});
+    this.setState({ color: newColor });
   }
 
   handleClick() {
@@ -41,19 +45,26 @@ export class ViewColorSettings extends React.Component {
 
   render() {
     const styles = {
-      'default': {
-        picker: { background: '#202124', boxShadow: 'none' }, body: {
+      default: {
+        picker: { background: '#202124', boxShadow: 'none' },
+        body: {
           padding: '12px 0 0',
         },
       },
     };
     return (
       <div>
-        <div className='control'>
-          <ChromePicker color={this.state.color} onChange={(c) => this.handleChange(c)} width='100%' disableAlpha={true} styles={styles}
-                        defaultView={'rgb'} />
+        <div className="control">
+          <ChromePicker
+            color={this.state.color}
+            onChange={(c) => this.handleChange(c)}
+            width="100%"
+            disableAlpha={true}
+            styles={styles}
+            defaultView={'rgb'}
+          />
         </div>
-        <div className='control'>
+        <div className="control">
           <button onClick={() => this.handleClick()}>Save custom color</button>
         </div>
       </div>

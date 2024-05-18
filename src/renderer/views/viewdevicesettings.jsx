@@ -6,10 +6,9 @@ import { SectionProductHeader } from '../sections/sectionproductheader';
 import { SectionSettingPollRate } from '../sections/sectionsettingpollrate';
 
 export class ViewDeviceSettings extends React.Component {
-
   constructor(props) {
     super(props);
-    if(props.config != null) {
+    if (props.config != null) {
       this.deviceSelected = props.config.device;
     }
   }
@@ -17,24 +16,24 @@ export class ViewDeviceSettings extends React.Component {
   render() {
     if (this.deviceSelected == null) {
       return (
-        <span className='no-select'>
-        <div id='no-device'>Please select a device to configure</div>
-      </span>
+        <span className="no-select">
+          <div id="no-device">Please select a device to configure</div>
+        </span>
       );
     }
 
     return (
-      <span className='no-select'>
-      <div id='body'>
-        <SectionProductHeader deviceSelected={this.deviceSelected}/>
-        <div id='settings'>
-          <SectionSettingColor deviceSelected={this.deviceSelected} />
-          <SectionSettingSensitivity deviceSelected={this.deviceSelected} />
-          <SectionSettingPollRate deviceSelected={this.deviceSelected} />
-          <SectionSettingBrightness deviceSelected={this.deviceSelected} />
+      <span className="no-select">
+        <div id="body">
+          <SectionProductHeader deviceSelected={this.deviceSelected} />
+          <div id="settings">
+            <SectionSettingColor deviceSelected={this.deviceSelected} />
+            <SectionSettingSensitivity deviceSelected={this.deviceSelected} />
+            <SectionSettingPollRate deviceSelected={this.deviceSelected} />
+            <SectionSettingBrightness deviceSelected={this.deviceSelected} />
+          </div>
         </div>
-        </div>
-    </span>
+      </span>
     );
   }
 }

@@ -17,12 +17,14 @@ export class RazerDeviceKeyboard extends RazerDevice {
   getDefaultSettings() {
     return {
       customColor1: this.defaultColorSettings,
-      customColor2: this.defaultColorSettings
-    }
+      customColor2: this.defaultColorSettings,
+    };
   }
 
   getSerializeIgnoredProperties() {
-    return super.getSerializeIgnoredProperties().concat(['rippleAnimation', 'wheelAnimation']);
+    return super
+      .getSerializeIgnoredProperties()
+      .concat(['rippleAnimation', 'wheelAnimation']);
   }
 
   getState() {
@@ -38,10 +40,10 @@ export class RazerDeviceKeyboard extends RazerDevice {
 
   destroy() {
     super.destroy();
-    if(this.rippleAnimation != null) {
+    if (this.rippleAnimation != null) {
       this.rippleAnimation.destroy();
     }
-    if(this.wheelAnimation != null) {
+    if (this.wheelAnimation != null) {
       this.wheelAnimation.destroy();
     }
   }
@@ -49,7 +51,7 @@ export class RazerDeviceKeyboard extends RazerDevice {
   setModeNone() {
     super.setModeNone();
     this.stopAnimations();
-    this.addon.kbdSetModeNone(this.internalId)
+    this.addon.kbdSetModeNone(this.internalId);
   }
 
   setModeStaticNoStore(color) {
@@ -102,10 +104,10 @@ export class RazerDeviceKeyboard extends RazerDevice {
   }
 
   stopAnimations() {
-    if(this.rippleAnimation != null) {
+    if (this.rippleAnimation != null) {
       this.rippleAnimation.stop();
     }
-    if(this.wheelAnimation != null) {
+    if (this.wheelAnimation != null) {
       this.wheelAnimation.stop();
     }
   }
@@ -113,14 +115,23 @@ export class RazerDeviceKeyboard extends RazerDevice {
   setRippleEffect(featureConfiguration, color, backgroundColor) {
     this.setModeState('ripple', [featureConfiguration, color, backgroundColor]);
     this.stopAnimations();
-    this.rippleAnimation = new RazerAnimationRipple(this, featureConfiguration, color, backgroundColor);
+    this.rippleAnimation = new RazerAnimationRipple(
+      this,
+      featureConfiguration,
+      color,
+      backgroundColor
+    );
     this.rippleAnimation.start();
   }
 
   setWheelEffect(featureConfiguration, speed) {
     this.setModeState('wheel', [featureConfiguration, speed]);
     this.stopAnimations();
-    this.wheelAnimation = new RazerAnimationWheel(this, featureConfiguration, speed);
+    this.wheelAnimation = new RazerAnimationWheel(
+      this,
+      featureConfiguration,
+      speed
+    );
     this.wheelAnimation.start();
   }
 

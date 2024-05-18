@@ -3,7 +3,6 @@ import { ChromePicker, HuePicker, MaterialPicker } from 'react-color';
 import { ipcRenderer } from 'electron';
 
 export default function CustomColor2({ deviceSelected }) {
-
   const componentToHex = (c) => {
     if (typeof c === 'undefined') {
       return '00';
@@ -31,16 +30,28 @@ export default function CustomColor2({ deviceSelected }) {
     };
     ipcRenderer.send('request-set-custom-color', payload);
   };
-  const styles = { 'default': { picker: { background: '#202124', boxShadow: 'none'}, body: {
-        padding: '12px 0 0'
-      } }};
+  const styles = {
+    default: {
+      picker: { background: '#202124', boxShadow: 'none' },
+      body: {
+        padding: '12px 0 0',
+      },
+    },
+  };
   return (
     <div>
       <p>Secondary custom color selection (Starlight Dual Mode only)</p>
-      <div className='control'>
-        <ChromePicker color={currentColor} onChange={handleChange} width='100%' disableAlpha={true} styles={styles} defaultView={'rgb'}/>
+      <div className="control">
+        <ChromePicker
+          color={currentColor}
+          onChange={handleChange}
+          width="100%"
+          disableAlpha={true}
+          styles={styles}
+          defaultView={'rgb'}
+        />
       </div>
-      <div className='control'>
+      <div className="control">
         <button onClick={handleClick}>Save custom color</button>
       </div>
     </div>

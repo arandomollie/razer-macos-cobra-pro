@@ -18,29 +18,44 @@ import { FeatureIdentifier } from './featureidentifier';
 import { FeatureBattery } from './featurebattery';
 
 export class FeatureHelper {
-
   static createFeatureFrom(featureConfig) {
     const featureIdentifier = Object.keys(featureConfig)[0];
     const configuration = featureConfig[featureIdentifier];
     switch (featureIdentifier) {
-      case FeatureIdentifier.NONE: return new FeatureNone(configuration);
-      case FeatureIdentifier.STATIC: return new FeatureStatic(configuration);
-      case FeatureIdentifier.WAVE_SIMPLE: return new FeatureWaveSimple(configuration);
-      case FeatureIdentifier.WAVE_EXTENDED: return new FeatureWaveExtended(configuration);
-      case FeatureIdentifier.SPECTRUM: return new FeatureSpectrum(configuration);
-      case FeatureIdentifier.REACTIVE: return new FeatureReactive(configuration);
-      case FeatureIdentifier.BREATHE: return new FeatureBreathe(configuration);
-      case FeatureIdentifier.STARLIGHT: return new FeatureStarlight(configuration);
-      case FeatureIdentifier.BRIGHTNESS: return new FeatureBrightness(configuration);
-      case FeatureIdentifier.RIPPLE: return new FeatureRipple(configuration);
-      case FeatureIdentifier.WHEEL: return new FeatureWheel(configuration);
-      case FeatureIdentifier.OLD_MOUSE_EFFECTS: return new FeatureOldMouseEffects(configuration);
-      case FeatureIdentifier.MOUSE_BRIGHTNESS: return new FeatureMouseBrightness(configuration);
-      case FeatureIdentifier.POLL_RATE: return new FeatureMousePollRate(configuration);
-      case FeatureIdentifier.MOUSE_DPI: return new FeatureMouseDPI(configuration);
-      case FeatureIdentifier.BATTERY: return new FeatureBattery(configuration);
+      case FeatureIdentifier.NONE:
+        return new FeatureNone(configuration);
+      case FeatureIdentifier.STATIC:
+        return new FeatureStatic(configuration);
+      case FeatureIdentifier.WAVE_SIMPLE:
+        return new FeatureWaveSimple(configuration);
+      case FeatureIdentifier.WAVE_EXTENDED:
+        return new FeatureWaveExtended(configuration);
+      case FeatureIdentifier.SPECTRUM:
+        return new FeatureSpectrum(configuration);
+      case FeatureIdentifier.REACTIVE:
+        return new FeatureReactive(configuration);
+      case FeatureIdentifier.BREATHE:
+        return new FeatureBreathe(configuration);
+      case FeatureIdentifier.STARLIGHT:
+        return new FeatureStarlight(configuration);
+      case FeatureIdentifier.BRIGHTNESS:
+        return new FeatureBrightness(configuration);
+      case FeatureIdentifier.RIPPLE:
+        return new FeatureRipple(configuration);
+      case FeatureIdentifier.WHEEL:
+        return new FeatureWheel(configuration);
+      case FeatureIdentifier.OLD_MOUSE_EFFECTS:
+        return new FeatureOldMouseEffects(configuration);
+      case FeatureIdentifier.MOUSE_BRIGHTNESS:
+        return new FeatureMouseBrightness(configuration);
+      case FeatureIdentifier.POLL_RATE:
+        return new FeatureMousePollRate(configuration);
+      case FeatureIdentifier.MOUSE_DPI:
+        return new FeatureMouseDPI(configuration);
+      case FeatureIdentifier.BATTERY:
+        return new FeatureBattery(configuration);
       default:
-        throw featureIdentifier+' is not a valid feature identifier!'
+        throw featureIdentifier + ' is not a valid feature identifier!';
     }
   }
 
@@ -88,7 +103,7 @@ export class FeatureHelper {
           new FeatureWaveSimple(),
           new FeatureSpectrum(),
           new FeatureBreathe(),
-          new FeatureBrightness()
+          new FeatureBrightness(),
         ];
       case RazerDeviceType.EGPU:
         return [
@@ -114,7 +129,9 @@ export class FeatureHelper {
           new FeatureBreathe(),
         ];
       default:
-        console.warn("Unknown mainType "+mainType+". Can't detect feature set.");
+        console.warn(
+          'Unknown mainType ' + mainType + ". Can't detect feature set."
+        );
         return [];
     }
   }

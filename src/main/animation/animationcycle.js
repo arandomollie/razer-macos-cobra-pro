@@ -1,7 +1,6 @@
 import { RazerDeviceAnimation } from './animation';
 
 export class RazerAnimationCycle extends RazerDeviceAnimation {
-
   constructor(razerApp) {
     super();
     this.razerApp = razerApp;
@@ -12,7 +11,7 @@ export class RazerAnimationCycle extends RazerDeviceAnimation {
   }
 
   setDevicesCycleColors() {
-    this.razerApp.deviceManager.activeRazerDevices.forEach(device => {
+    this.razerApp.deviceManager.activeRazerDevices.forEach((device) => {
       device.setModeStaticNoStore([
         this.cycleColors[this.cycleColorsIndex].r,
         this.cycleColors[this.cycleColorsIndex].g,
@@ -30,7 +29,10 @@ export class RazerAnimationCycle extends RazerDeviceAnimation {
     clearInterval(this.cycleColorsInterval);
     this.cycleColorsIndex = 0;
     this.setDevicesCycleColors(this.cycleColors);
-    this.cycleColorsInterval = setInterval(() => this.setDevicesCycleColors(), this.colorChangeMs);
+    this.cycleColorsInterval = setInterval(
+      () => this.setDevicesCycleColors(),
+      this.colorChangeMs
+    );
   }
 
   stop() {

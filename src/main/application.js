@@ -1,5 +1,14 @@
 import { RazerApplication } from './razerapplication';
-import { app, dialog, BrowserWindow, ipcMain, Menu, nativeTheme, Tray, powerMonitor } from 'electron';
+import {
+  app,
+  dialog,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  nativeTheme,
+  Tray,
+  powerMonitor,
+} from 'electron';
 import path from 'path';
 import { getMenuFor } from './menu/menubuilder';
 
@@ -11,7 +20,6 @@ const version = require('../../package.json').version;
  * @constructor
  */
 export class Application {
-
   constructor(isDevelopment) {
     this.isDevelopment = isDevelopment;
     this.forceQuit = false;
@@ -42,7 +50,7 @@ export class Application {
     });
 
     powerMonitor.on('suspend', () => {
-      if(this.razerApplication.stateManager.stateOnSuspend == null) {
+      if (this.razerApplication.stateManager.stateOnSuspend == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -50,7 +58,7 @@ export class Application {
       });
     });
     powerMonitor.on('resume', () => {
-      if(this.razerApplication.stateManager.stateOnResume == null) {
+      if (this.razerApplication.stateManager.stateOnResume == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -58,7 +66,7 @@ export class Application {
       });
     });
     powerMonitor.on('on-ac', () => {
-      if(this.razerApplication.stateManager.stateOnAc == null) {
+      if (this.razerApplication.stateManager.stateOnAc == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -66,7 +74,7 @@ export class Application {
       });
     });
     powerMonitor.on('on-battery', () => {
-      if(this.razerApplication.stateManager.stateOnBattery == null) {
+      if (this.razerApplication.stateManager.stateOnBattery == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -74,7 +82,7 @@ export class Application {
       });
     });
     powerMonitor.on('shutdown', () => {
-      if(this.razerApplication.stateManager.stateOnShutdown == null) {
+      if (this.razerApplication.stateManager.stateOnShutdown == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -82,7 +90,7 @@ export class Application {
       });
     });
     powerMonitor.on('lock-screen', () => {
-      if(this.razerApplication.stateManager.stateOnLockScreen == null) {
+      if (this.razerApplication.stateManager.stateOnLockScreen == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -90,7 +98,7 @@ export class Application {
       });
     });
     powerMonitor.on('unlock-screen', () => {
-      if(this.razerApplication.stateManager.stateOnUnlockScreen == null) {
+      if (this.razerApplication.stateManager.stateOnUnlockScreen == null) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -98,7 +106,9 @@ export class Application {
       });
     });
     powerMonitor.on('user-did-become-active', () => {
-      if(this.razerApplication.stateManager.stateOnUserDidBecomeActive == null) {
+      if (
+        this.razerApplication.stateManager.stateOnUserDidBecomeActive == null
+      ) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -106,7 +116,9 @@ export class Application {
       });
     });
     powerMonitor.on('user-did-resign-active', () => {
-      if(this.razerApplication.stateManager.stateOnUserDidResignActive == null) {
+      if (
+        this.razerApplication.stateManager.stateOnUserDidResignActive == null
+      ) {
         return;
       }
       this.razerApplication.refresh(false).then(() => {
@@ -117,7 +129,9 @@ export class Application {
     // mouse dpi rpc listener
     ipcMain.on('request-set-dpi', (_, arg) => {
       const { device, dpi } = arg;
-      const currentDevice = this.razerApplication.deviceManager.getByInternalId(device.internalId);
+      const currentDevice = this.razerApplication.deviceManager.getByInternalId(
+        device.internalId
+      );
       currentDevice.setDPI(dpi);
       this.refreshTray();
     });
@@ -125,7 +139,9 @@ export class Application {
     // keyboard brightness rpc listener
     ipcMain.on('update-brightness', (_, arg) => {
       const { device, brightness } = arg;
-      const currentDevice = this.razerApplication.deviceManager.getByInternalId(device.internalId);
+      const currentDevice = this.razerApplication.deviceManager.getByInternalId(
+        device.internalId
+      );
       currentDevice.setBrightness(brightness);
       this.refreshTray();
     });
@@ -133,7 +149,9 @@ export class Application {
     // custom color rpc listener
     ipcMain.on('request-set-custom-color', (_, arg) => {
       const { device } = arg;
-      const currentDevice = this.razerApplication.deviceManager.getByInternalId(device.internalId);
+      const currentDevice = this.razerApplication.deviceManager.getByInternalId(
+        device.internalId
+      );
       currentDevice.setSettings(device.settings);
       this.refreshTray();
     });
@@ -146,25 +164,41 @@ export class Application {
     });
 
     // mouse brightness
-    ['Matrix','Logo', 'Scroll', 'Left', 'Right'].forEach(brightnessMouseIdentifier => {
-      ipcMain.on('update-mouse-' + brightnessMouseIdentifier.toLowerCase() + '-brightness', (_, arg) => {
-        const { device, brightness } = arg;
-        const currentDevice = this.razerApplication.deviceManager.getByInternalId(device.internalId);
-        currentDevice['setBrightness' + brightnessMouseIdentifier](brightness);
-        this.refreshTray();
-      });
-    });
+    ['Matrix', 'Logo', 'Scroll', 'Left', 'Right'].forEach(
+      (brightnessMouseIdentifier) => {
+        ipcMain.on(
+          'update-mouse-' +
+            brightnessMouseIdentifier.toLowerCase() +
+            '-brightness',
+          (_, arg) => {
+            const { device, brightness } = arg;
+            const currentDevice =
+              this.razerApplication.deviceManager.getByInternalId(
+                device.internalId
+              );
+            currentDevice['setBrightness' + brightnessMouseIdentifier](
+              brightness
+            );
+            this.refreshTray();
+          }
+        );
+      }
+    );
 
     // poll rate
     ipcMain.on('update-mouse-pollrate', (_, arg) => {
       const { device, pollRate } = arg;
-      const currentDevice = this.razerApplication.deviceManager.getByInternalId(device.internalId);
+      const currentDevice = this.razerApplication.deviceManager.getByInternalId(
+        device.internalId
+      );
       currentDevice.setPollRate(pollRate);
     });
 
     //state manager
     ipcMain.on('state-settings-add', async (event, stateName) => {
-      event.returnValue = await this.razerApplication.stateManager.addState(stateName);
+      event.returnValue = await this.razerApplication.stateManager.addState(
+        stateName
+      );
     });
     ipcMain.on('state-settings-remove', (event, stateName) => {
       this.razerApplication.stateManager.removeState(stateName);
@@ -206,15 +240,16 @@ export class Application {
       this.razerApplication.stateManager.save();
     });
     ipcMain.on('state-settings-userdidbecomeactive', (event, stateValue) => {
-      this.razerApplication.stateManager.stateOnUserDidBecomeActive = stateValue;
+      this.razerApplication.stateManager.stateOnUserDidBecomeActive =
+        stateValue;
       this.razerApplication.stateManager.save();
     });
     ipcMain.on('state-settings-userdidresignactive', (event, stateValue) => {
-      this.razerApplication.stateManager.stateOnUserDidResignActive = stateValue;
+      this.razerApplication.stateManager.stateOnUserDidResignActive =
+        stateValue;
       this.razerApplication.stateManager.save();
     });
   }
-
 
   createWindow() {
     this.browserWindow = new BrowserWindow({
@@ -233,7 +268,9 @@ export class Application {
       show: false,
     });
     if (this.isDevelopment) {
-      this.browserWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+      this.browserWindow.loadURL(
+        `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
+      );
       this.browserWindow.resizable = true;
     } else {
       this.browserWindow.loadFile(path.join(__dirname, 'index.html'));
@@ -292,12 +329,14 @@ export class Application {
     this.tray = new Tray(path.join(__static, '/assets/iconTemplate.png'));
     this.tray.setToolTip('Razer macOS menu');
     this.tray.on('click', () => {
-      if(this.razerApplication.deviceManager.activeRazerDevices != null) {
-        this.razerApplication.deviceManager.activeRazerDevices.forEach(device => {
-          if (device !== null) {
-            device.refresh();
+      if (this.razerApplication.deviceManager.activeRazerDevices != null) {
+        this.razerApplication.deviceManager.activeRazerDevices.forEach(
+          (device) => {
+            if (device !== null) {
+              device.refresh();
+            }
           }
-        });
+        );
       }
       this.refreshTray();
     });
@@ -306,7 +345,9 @@ export class Application {
   }
 
   refreshTray(withDeviceRefresh) {
-    const refresh = withDeviceRefresh ? this.razerApplication.refresh() : Promise.resolve(true);
+    const refresh = withDeviceRefresh
+      ? this.razerApplication.refresh()
+      : Promise.resolve(true);
     refresh.then(() => {
       const contextMenu = Menu.buildFromTemplate(getMenuFor(this));
       this.tray.setContextMenu(contextMenu);
@@ -316,7 +357,8 @@ export class Application {
   showConfirm(message) {
     this.app.focus();
     return this.dialog.showMessageBox({
-      buttons: ['Yes', 'No'], message: message,
+      buttons: ['Yes', 'No'],
+      message: message,
     });
   }
 

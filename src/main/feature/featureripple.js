@@ -10,6 +10,6 @@ export class FeatureRipple extends Feature {
     return {
       rows: -1,
       cols: -1,
-    }
+    };
   }
 }

@@ -5,16 +5,15 @@ import Creatable from 'react-select/creatable';
 import Select from 'react-select';
 
 export class ViewStateSettings extends React.Component {
-
   constructor(props) {
     super(props);
     this.stateManager = this.props.config.state;
-    const options = this.stateManager.savedStates.map(state => {
+    const options = this.stateManager.savedStates.map((state) => {
       return { value: state.name, label: state.name };
     });
     const optionsWithNull = this.getOptionsWithNull(options);
 
-    console.log(this.stateManager)
+    console.log(this.stateManager);
 
     this.state = {
       selection: null,
@@ -22,47 +21,84 @@ export class ViewStateSettings extends React.Component {
       isLoading: false,
 
       optionsWithNull: optionsWithNull,
-      selectionStart: optionsWithNull.find(o => o.value === this.stateManager.stateOnStart),
-      selectionResume: optionsWithNull.find(o => o.value === this.stateManager.stateOnResume),
-      selectionSuspend: optionsWithNull.find(o => o.value === this.stateManager.stateOnSuspend),
-      selectionAc: optionsWithNull.find(o => o.value === this.stateManager.stateOnAc),
-      selectionBatt: optionsWithNull.find(o => o.value === this.stateManager.stateOnBattery),
-      selectionShutdown: optionsWithNull.find(o => o.value === this.stateManager.stateOnShutdown),
-      selectionLockscreen: optionsWithNull.find(o => o.value === this.stateManager.stateOnLockScreen),
-      selectionUnlockscreen: optionsWithNull.find(o => o.value === this.stateManager.stateOnUnlockScreen),
-      selectionUserDidBecomeActive: optionsWithNull.find(o => o.value === this.stateManager.stateOnUserDidBecomeActive),
-      selectionUserDidResignActive: optionsWithNull.find(o => o.value === this.stateManager.stateOnUserDidResignActive),
-    }
+      selectionStart: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnStart
+      ),
+      selectionResume: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnResume
+      ),
+      selectionSuspend: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnSuspend
+      ),
+      selectionAc: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnAc
+      ),
+      selectionBatt: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnBattery
+      ),
+      selectionShutdown: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnShutdown
+      ),
+      selectionLockscreen: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnLockScreen
+      ),
+      selectionUnlockscreen: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnUnlockScreen
+      ),
+      selectionUserDidBecomeActive: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnUserDidBecomeActive
+      ),
+      selectionUserDidResignActive: optionsWithNull.find(
+        (o) => o.value === this.stateManager.stateOnUserDidResignActive
+      ),
+    };
   }
 
   getOptionsWithNull(options) {
-    return [{
-      value: null, label: '--- Default: do nothing ---'
-    }].concat(options);
+    return [
+      {
+        value: null,
+        label: '--- Default: do nothing ---',
+      },
+    ].concat(options);
   }
 
   getPropertiesToKeyValues(object) {
     return Object.entries(object).map(([key, value]) => {
-      return <div key={key} className='state-device-body-properties'>
-        <div>{key.toUpperCase()}</div>
-        <div>{JSON.stringify(value)}</div>
-      </div>
+      return (
+        <div key={key} className="state-device-body-properties">
+          <div>{key.toUpperCase()}</div>
+          <div>{JSON.stringify(value)}</div>
+        </div>
+      );
     });
   }
 
   getDeviceStateFor(device, state) {
-    return (<div key={device.productId} className='state-device'>
-      <div className='state-device-title'>{device.name}</div>
-      <div className='state-device-body'>{this.getPropertiesToKeyValues(state)}</div>
-    </div>);
+    return (
+      <div key={device.productId} className="state-device">
+        <div className="state-device-title">{device.name}</div>
+        <div className="state-device-body">
+          {this.getPropertiesToKeyValues(state)}
+        </div>
+      </div>
+    );
   }
 
   selectionChange(item, actionObject) {
-    if(actionObject.action === 'clear') {
-      if(window.confirm('Do you really want to remove state "'+this.state.selection.label+'"?')) {
+    if (actionObject.action === 'clear') {
+      if (
+        window.confirm(
+          'Do you really want to remove state "' +
+            this.state.selection.label +
+            '"?'
+        )
+      ) {
         const toDeleteItem = this.state.selection.value;
         ipcRenderer.send('state-settings-remove', toDeleteItem);
-        const newOptions = this.state.options.filter(o => o.value !== toDeleteItem);
+        const newOptions = this.state.options.filter(
+          (o) => o.value !== toDeleteItem
+        );
         this.setState({ selection: null, options: newOptions });
       }
     } else {
@@ -73,27 +109,45 @@ export class ViewStateSettings extends React.Component {
   handleCreate(itemName) {
     this.setState({ isLoading: true });
 
-    const additionalState = ipcRenderer.sendSync('state-settings-add', itemName);
+    const additionalState = ipcRenderer.sendSync(
+      'state-settings-add',
+      itemName
+    );
     this.stateManager.savedStates.push(additionalState);
 
-    const devicesWithUndefinedState = additionalState.states.filter(stateObj => !stateObj.state.mode).map(stateObj => {
-      const device = this.stateManager.devices.find(d => d.productId === stateObj.deviceId);
-      return device.name;
-    });
+    const devicesWithUndefinedState = additionalState.states
+      .filter((stateObj) => !stateObj.state.mode)
+      .map((stateObj) => {
+        const device = this.stateManager.devices.find(
+          (d) => d.productId === stateObj.deviceId
+        );
+        return device.name;
+      });
 
-    if(devicesWithUndefinedState.length > 0) {
-      let message = 'The state "'+itemName+'" has been created but the following devices have an undefined state:';
+    if (devicesWithUndefinedState.length > 0) {
+      let message =
+        'The state "' +
+        itemName +
+        '" has been created but the following devices have an undefined state:';
       message += '\n\n';
-      devicesWithUndefinedState.forEach(deviceName => message += '· '+deviceName+'\n');
+      devicesWithUndefinedState.forEach(
+        (deviceName) => (message += '· ' + deviceName + '\n')
+      );
       message += '\n';
-      message += 'Please set the mentioned devices to a defined state by using the Razer macOS menu at the top right and try again.';
+      message +=
+        'Please set the mentioned devices to a defined state by using the Razer macOS menu at the top right and try again.';
       window.alert(message);
     }
 
-    const newOptions = this.stateManager.savedStates.map(state => {
+    const newOptions = this.stateManager.savedStates.map((state) => {
       return { value: state.name, label: state.name };
     });
-    this.setState({ isLoading:false, selection: newOptions.find(o => o.value === itemName), options: newOptions, optionsWithNull: this.getOptionsWithNull(newOptions) });
+    this.setState({
+      isLoading: false,
+      selection: newOptions.find((o) => o.value === itemName),
+      options: newOptions,
+      optionsWithNull: this.getOptionsWithNull(newOptions),
+    });
   }
 
   handleClick() {
@@ -101,12 +155,17 @@ export class ViewStateSettings extends React.Component {
   }
 
   renderState() {
-    const stateToRender = this.stateManager.savedStates.find(s => this.state.selection != null && s.name == this.state.selection.value);
-    if(!stateToRender) {
+    const stateToRender = this.stateManager.savedStates.find(
+      (s) =>
+        this.state.selection != null && s.name == this.state.selection.value
+    );
+    if (!stateToRender) {
       return null;
     }
-    return stateToRender.states.map(stateObj => {
-      const device = this.stateManager.devices.find(device => device.productId == stateObj.deviceId);
+    return stateToRender.states.map((stateObj) => {
+      const device = this.stateManager.devices.find(
+        (device) => device.productId == stateObj.deviceId
+      );
       return this.getDeviceStateFor(device, stateObj.state);
     });
   }
@@ -153,7 +212,6 @@ export class ViewStateSettings extends React.Component {
   }
 
   render() {
-
     const customStyles = {
       option: (provided, state) => ({
         ...provided,
@@ -169,7 +227,7 @@ export class ViewStateSettings extends React.Component {
         },
         ':hover': {
           backgroundColor: state.isSelected ? 'green' : '#002b17',
-        }
+        },
       }),
       control: (provided, state) => ({
         ...provided,
@@ -182,8 +240,8 @@ export class ViewStateSettings extends React.Component {
         minHeight: 0,
         boxShadow: 'none',
         transition: 'none',
-        ":hover": {
-          borderColor: "inherit",
+        ':hover': {
+          borderColor: 'inherit',
         },
       }),
       menu: (provided, state) => ({
@@ -202,7 +260,7 @@ export class ViewStateSettings extends React.Component {
       dropdownIndicator: (provided, state) => ({
         ...provided,
         color: '#47e10c',
-        padding: '0px 8px'
+        padding: '0px 8px',
       }),
       indicatorSeparator: (provided, state) => ({
         ...provided,
@@ -229,100 +287,229 @@ export class ViewStateSettings extends React.Component {
           <div>
             <div>
               <p>
-                State manager allows you to create unique states for all your devices.
-                <br />Either choose an existing state to activate or create a new one by:
-                </p>
+                State manager allows you to create unique states for all your
+                devices.
+                <br />
+                Either choose an existing state to activate or create a new one
+                by:
+              </p>
               <ol>
-                <li>Set each device in the state you want it to be with the help of the menu</li>
-                <li>Focus the dropdown and give your state a name, like "Party" or "Work".</li>
+                <li>
+                  Set each device in the state you want it to be with the help
+                  of the menu
+                </li>
+                <li>
+                  Focus the dropdown and give your state a name, like "Party" or
+                  "Work".
+                </li>
                 <li>Press enter or click on the "Create" dropdown item</li>
               </ol>
               <p>
-                States defined here can be previewed, activated and used in the "Settings" tab for system / application events.
+                States defined here can be previewed, activated and used in the
+                "Settings" tab for system / application events.
               </p>
             </div>
             <div className={'control'}>
-              <Creatable isLoading={this.state.isLoading} isClearable={true} value={this.state.selection} options={this.state.options} onCreateOption={(item) => this.handleCreate(item)} onChange={(item, action) => this.selectionChange(item, action)} styles={customStyles} />
+              <Creatable
+                isLoading={this.state.isLoading}
+                isClearable={true}
+                value={this.state.selection}
+                options={this.state.options}
+                onCreateOption={(item) => this.handleCreate(item)}
+                onChange={(item, action) => this.selectionChange(item, action)}
+                styles={customStyles}
+              />
             </div>
             <div className={'control'}>
-              <button disabled={this.state.selection == null} onClick={() => this.handleClick()}>{this.state.selection == null ? 'Activate - Please select a state first' : 'Activate'}</button>
+              <button
+                disabled={this.state.selection == null}
+                onClick={() => this.handleClick()}
+              >
+                {this.state.selection == null
+                  ? 'Activate - Please select a state first'
+                  : 'Activate'}
+              </button>
             </div>
-            <div className={'state-devices'}>
-              {this.renderState()}
-            </div>
+            <div className={'state-devices'}>{this.renderState()}</div>
           </div>
         </TabPanel>
         <TabPanel>
           <div>
-            <p>Select a state to be activate on application and system events</p>
+            <p>
+              Select a state to be activate on application and system events
+            </p>
           </div>
           <div className={'state-selectors'}>
-
-            <p>This state will be activated whenever Razer macOS starts or refreshes its devices.</p>
+            <p>
+              This state will be activated whenever Razer macOS starts or
+              refreshes its devices.
+            </p>
             <div className={'state-selector'}>
               <div>On application start</div>
-              <div><Select value={this.state.selectionStart} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeStart(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionStart}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeStart(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system goes to sleep ('suspend' event).</p>
+            <p>
+              This state will be activated when the system goes to sleep
+              ('suspend' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system idle/sleep</div>
-              <div><Select value={this.state.selectionSuspend} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeSuspend(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionSuspend}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeSuspend(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system wakes up ('resume' event).</p>
+            <p>
+              This state will be activated when the system wakes up ('resume'
+              event).
+            </p>
             <div className={'state-selector'}>
               <div>On system wake up</div>
-              <div><Select value={this.state.selectionResume} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeResume(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionResume}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeResume(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system is plugged in ('on-ac' event).</p>
+            <p>
+              This state will be activated when the system is plugged in
+              ('on-ac' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system plugged in</div>
-              <div><Select value={this.state.selectionAc} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeAc(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionAc}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeAc(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system is on battery ('on-battery' event).</p>
+            <p>
+              This state will be activated when the system is on battery
+              ('on-battery' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system on battery</div>
-              <div><Select value={this.state.selectionBatt} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeBattery(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionBatt}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeBattery(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system is about to shutdown ('shutdown' event).</p>
+            <p>
+              This state will be activated when the system is about to shutdown
+              ('shutdown' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system shutdown</div>
-              <div><Select value={this.state.selectionShutdown} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeShutdown(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionShutdown}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeShutdown(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system is about to lock the screen ('lock-screen' event).</p>
+            <p>
+              This state will be activated when the system is about to lock the
+              screen ('lock-screen' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system lock screen</div>
-              <div><Select value={this.state.selectionLockscreen} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeLockscreen(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionLockscreen}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeLockscreen(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the system is about to unlock the screen ('unlock-screen' event).</p>
+            <p>
+              This state will be activated when the system is about to unlock
+              the screen ('unlock-screen' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system unlock screen</div>
-              <div><Select value={this.state.selectionUnlockscreen} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeUnlockscreen(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionUnlockscreen}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) => this.selectionChangeUnlockscreen(item)}
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the user on the system is about to become active ('user-did-become-active' event).</p>
+            <p>
+              This state will be activated when the user on the system is about
+              to become active ('user-did-become-active' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system user become active</div>
-              <div><Select value={this.state.selectionUserDidBecomeActive} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeUserDidBecomeActive(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionUserDidBecomeActive}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) =>
+                    this.selectionChangeUserDidBecomeActive(item)
+                  }
+                  styles={customStyles}
+                />
+              </div>
             </div>
 
-            <p>This state will be activated when the user on the system is about to resign active ('user-did-resign-active' event).</p>
+            <p>
+              This state will be activated when the user on the system is about
+              to resign active ('user-did-resign-active' event).
+            </p>
             <div className={'state-selector'}>
               <div>On system user resign active</div>
-              <div><Select value={this.state.selectionUserDidResignActive} options={this.state.optionsWithNull} onChange={(item) => this.selectionChangeUserDidResignActive(item)} styles={customStyles} /></div>
+              <div>
+                <Select
+                  value={this.state.selectionUserDidResignActive}
+                  options={this.state.optionsWithNull}
+                  onChange={(item) =>
+                    this.selectionChangeUserDidResignActive(item)
+                  }
+                  styles={customStyles}
+                />
+              </div>
             </div>
-
           </div>
         </TabPanel>
         <TabPanel>
           <div className={'state-devices'}>
-            {this.stateManager.devices.map(device => this.getDeviceStateFor(device, device.state))}
+            {this.stateManager.devices.map((device) =>
+              this.getDeviceStateFor(device, device.state)
+            )}
           </div>
         </TabPanel>
       </Tabs>

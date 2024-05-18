@@ -8,7 +8,7 @@ export class FeatureMousePollRate extends Feature {
 
   getDefaultConfiguration() {
     return {
-      "pollRates": [125, 250, 500, 1000]
+      pollRates: [125, 250, 500, 1000],
     };
   }
 }

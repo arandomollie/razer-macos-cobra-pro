@@ -16,21 +16,33 @@ export class RazerApplication {
   constructor() {
     this.settingsManager = new SettingsManager();
     this.stateManager = new StateManager(this.settingsManager);
-    this.deviceManager = new RazerDeviceManager(this.settingsManager, this.stateManager);
+    this.deviceManager = new RazerDeviceManager(
+      this.settingsManager,
+      this.stateManager
+    );
     this.spectrumAnimation = null;
     this.cycleAnimation = null;
   }
 
   async refresh(withOnStartState = true) {
     return this.deviceManager.refreshRazerDevices().then(() => {
-      const spectrumPromise = new RazerAnimationCycleSpectrum(this).init().then(animation => {
-        this.spectrumAnimation = animation;
-      });
-      const cyclePromise = new RazerAnimationCycleCustom(this).init().then(animation => {
-        this.cycleAnimation = animation;
-      });
-      const resetAll = this.stateManager.init(this.deviceManager.activeRazerDevices, withOnStartState);
-      return Promise.all([spectrumPromise, cyclePromise, resetAll]).then(() => true);
+      const spectrumPromise = new RazerAnimationCycleSpectrum(this)
+        .init()
+        .then((animation) => {
+          this.spectrumAnimation = animation;
+        });
+      const cyclePromise = new RazerAnimationCycleCustom(this)
+        .init()
+        .then((animation) => {
+          this.cycleAnimation = animation;
+        });
+      const resetAll = this.stateManager.init(
+        this.deviceManager.activeRazerDevices,
+        withOnStartState
+      );
+      return Promise.all([spectrumPromise, cyclePromise, resetAll]).then(
+        () => true
+      );
     });
   }
 
